@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,34 +8,186 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Million Pixels</title>
+<title>Million Pixels | Own a Piece of the Internet</title>
 
 <style>
 
-body{
+*{box-sizing:border-box}
 
-    margin:0;
+body{margin:0;background:#0b1020;color:white;font-family:Arial,sans-serif;text-align:center}
 
-    font-family:Arial,sans-serif;
+header{padding:35px 15px;background:#141b30}
 
-    background:#111;
+h1{font-size:38px;margin:0 0 10px}
 
-    color:white;
+p{color:#b9c5dc}
 
-    text-align:center;
+.price{font-size:24px;color:#65e5a5;font-weight:bold}
+
+main{padding:25px 12px}
+
+#grid{display:grid;grid-template-columns:repeat(100,10px);grid-template-rows:repeat(100,10px);width:1000px;height:1000px;background:white}
+
+.cell{width:10px;height:10px;border:1px solid #ddd;background:#fff;cursor:pointer;padding:0}
+
+.cell.selected{background:#38bdf8}
+
+#gridwrap{overflow:auto;max-width:100%;margin:20px auto;border:3px solid #34415e;border-radius:8px}
+
+.panel{max-width:550px;margin:20px auto;padding:20px;background:#1b2640;border-radius:12px}
+
+button{background:#38bdf8;color:#07111e;border:0;padding:14px 24px;border-radius:8px;font-weight:bold;cursor:pointer}
+
+button:disabled{opacity:.5;cursor:not-allowed}
+
+input{padding:12px;width:90%;max-width:400px;margin:8px;border-radius:6px;border:0}
+
+small{color:#b9c5dc}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Million Pixels</h1>
+
+<p>Own a piece of the internet. Advertise your business forever!* </p>
+
+<div class="price">$10 per 10×10 pixel block</div>
+
+<small>*Subject to the website remaining online.</small>
+
+</header>
+
+<main>
+
+<h2>Choose Your Advertising Space</h2>
+
+<p>Tap a square to select it. Each square costs $10.</p>
+
+<div id="gridwrap"><div id="grid"></div></div>
+
+<div class="panel">
+
+<h2>Your Selection</h2>
+
+<p>Blocks selected: <strong id="count">0</strong></p>
+
+<h2>Total: $<span id="total">0</span></h2>
+
+<input id="business" placeholder="Business name" maxlength="100">
+
+<input id="website" placeholder="Website URL (https://...)" type="url">
+
+<input id="image" placeholder="Advertisement image URL (https://...)" type="url">
+
+<p><button id="buy" disabled>Continue to Purchase</button></p>
+
+<p id="message"></p>
+
+<small>Checkout is coming soon. No payments are collected yet.</small>
+
+</div>
+
+</main>
+
+<script>
+
+const grid=document.getElementById("grid");
+
+const selected=new Set();
+
+const count=document.getElementById("count");
+
+const total=document.getElementById("total");
+
+const buy=document.getElementById("buy");
+
+const message=document.getElementById("message");
+
+for(let i=0;i<10000;i++){
+
+ const cell=document.createElement("button");
+
+ cell.type="button";
+
+ cell.className="cell";
+
+ cell.title="Block "+(i+1);
+
+ cell.setAttribute("aria-label","Select block "+(i+1));
+
+ cell.onclick=()=>{
+
+  if(selected.has(i)){
+
+   selected.delete(i);
+
+   cell.classList.remove("selected");
+
+  }else{
+
+   selected.add(i);
+
+   cell.classList.add("selected");
+
+  }
+
+  count.textContent=selected.size;
+
+  total.textContent=selected.size*10;
+
+  buy.disabled=selected.size===0;
+
+ };
+
+ grid.appendChild(cell);
 
 }
 
-h1{
+buy.onclick=()=>{
 
-    margin:20px;
+ const business=document.getElementById("business").value.trim();
 
-}
+ const website=document.getElementById("website").value.trim();
 
-#grid{
+ const image=document.getElementById("image").value.trim();
 
-    width:1000px;
+ if(!business||!website||!image){
 
-    height:1000px;
+  message.textContent="Please complete all three fields.";
+
+  return;
+
+ }
+
+ try{
+
+  const url=new URL(website);
+
+  const img=new URL(image);
+
+  if(!["http:","https:"].includes(url.protocol)||
+
+     !["http:","https:"].includes(img.protocol)) throw Error();
+
+ }catch(e){
+
+  message.textContent="Please enter valid website and image URLs.";
+
+  return;
+
+ }
+
+ message.textContent="Your selection is ready! Secure checkout is not connected yet.";};
+
+</script>
+
+</body>
+
+</html>
